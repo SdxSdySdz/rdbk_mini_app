@@ -12,6 +12,13 @@
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
   </head>
   <body>
+    <div id="loading-overlay">
+      <img id="loading-bg" src="TemplateData/LoadingScreen.jpg" alt="">
+      <div id="loading-text">Loading...</div>
+      <div id="loading-bar-container">
+        <div id="loading-bar-fill"></div>
+      </div>
+    </div>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-warning"> </div>
@@ -91,10 +98,34 @@
       }
 
 
+      var loadingOverlay = document.getElementById("loading-overlay");
+      var loadingBarFill = document.getElementById("loading-bar-fill");
+      var loadingText = document.getElementById("loading-text");
+      var dotCount = 0;
+      var loadingDotsInterval = setInterval(function() {
+        dotCount = (dotCount % 3) + 1;
+        loadingText.textContent = "Loading" + ".".repeat(dotCount);
+      }, 500);
+
+      window.hideLoadingOverlay = function() {
+        clearInterval(loadingDotsInterval);
+        if (loadingOverlay) {
+          loadingOverlay.classList.add("fade-out");
+          setTimeout(function() {
+            loadingOverlay.remove();
+            loadingOverlay = null;
+          }, 600);
+        }
+      };
+
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
-        createUnityInstance(canvas, config, function() {}).then((unityInstance) => {
+        createUnityInstance(canvas, config, function(progress) {
+          if (loadingBarFill) {
+            loadingBarFill.style.width = (progress * 100) + "%";
+          }
+        }).then((unityInstance) => {
 
 
 
