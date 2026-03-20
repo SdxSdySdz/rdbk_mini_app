@@ -10,6 +10,20 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <script>
+      (function() {
+        var qs = new URLSearchParams(window.location.search);
+        var sp = qs.get('tgWebAppStartParam');
+        if (sp && window.Telegram && window.Telegram.WebApp) {
+          if (!window.Telegram.WebApp.initDataUnsafe) {
+            window.Telegram.WebApp.initDataUnsafe = {};
+          }
+          if (!window.Telegram.WebApp.initDataUnsafe.start_param) {
+            window.Telegram.WebApp.initDataUnsafe.start_param = sp;
+          }
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="loading-overlay">
